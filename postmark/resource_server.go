@@ -34,6 +34,11 @@ func resourceServer() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"smtp_api_activated": &schema.Schema{
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"apitokens": &schema.Schema{
 				Type:      schema.TypeList,
 				Computed:  true,
@@ -66,6 +71,8 @@ type Server struct {
 	Color string
 	// Delivery type of server
 	DeliveryType string
+	// Specifies whether or not SMTP is enabled on this server.
+	SmtpApiActivated bool
 }
 
 func resourceServerCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -88,6 +95,7 @@ func resourceServerCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	server.Name = d.Get("name").(string)
 	server.Color = d.Get("color").(string)
 	server.DeliveryType = d.Get("delivery_type").(string)
+	server.SmtpApiActivated = d.Get("smtp_api_activated").(bool)
 	if server.DeliveryType != "live" && server.DeliveryType != "Sandbox" {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
